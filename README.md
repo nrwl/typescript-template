@@ -1,83 +1,190 @@
-# Org
+# Nx TypeScript Repository
 
 <a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+✨ A repository showcasing key [Nx](https://nx.dev) features for TypeScript monorepos ✨
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+## 📦 Project Overview
 
-## Generate a library
+This repository demonstrates a production-ready TypeScript monorepo with:
 
-```sh
-npx nx g @nx/js:lib packages/pkg1 --publishable --importPath=@my-org/pkg1
+- **3 Publishable Packages** - Ready for NPM publishing
+  - `@org/strings` - String manipulation utilities
+  - `@org/async` - Async utility functions with retry logic
+  - `@org/colors` - Color conversion and manipulation utilities
+
+- **1 Internal Library**
+  - `@org/utils` - Shared utilities (private, not published)
+
+## 🚀 Quick Start
+
+```bash
+# Clone the repository
+git clone <your-fork-url>
+cd typescript-template
+
+# Install dependencies
+npm install
+
+# Build all packages
+npx nx run-many -t build
+
+# Run tests (note: one test intentionally fails for CI demo)
+npx nx run-many -t test
+
+# Lint all projects
+npx nx run-many -t lint
+
+# Run everything in parallel
+npx nx run-many -t lint test build --parallel=3
+
+# Visualize the project graph
+npx nx graph
 ```
 
-## Run tasks
+## ⭐ Featured Nx Capabilities
 
-To build the library use:
+This repository showcases several powerful Nx features:
 
-```sh
-npx nx build pkg1
+### 1. 🔒 Module Boundaries
+
+Enforces architectural constraints using tags. Each package has specific dependencies it can use:
+
+- `scope:shared` (utils) - Can be used by all packages
+- `scope:strings` - Can only depend on shared utilities
+- `scope:async` - Can only depend on shared utilities
+- `scope:colors` - Can only depend on shared utilities
+
+**Try it out:**
+```bash
+# See the current project graph and boundaries
+npx nx graph
+
+# View a specific project's details
+npx nx show project strings --web
 ```
 
-To run any task with Nx use:
+[Learn more about module boundaries →](https://nx.dev/features/enforce-module-boundaries)
 
-```sh
-npx nx <target> <project-name>
+### 2. 🛠️ Custom Run Commands
+
+Packages can define custom commands beyond standard build/test/lint:
+
+```bash
+# Run the custom build-base command for strings package
+npx nx run strings:build-base
+
+# See all available targets for a project
+npx nx show project strings
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+[Learn more about custom run commands →](https://nx.dev/concepts/executors-and-configurations)
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+### 3. 🔧 Self-Healing CI
 
-## Versioning and releasing
+The CI pipeline includes `nx fix-ci` which automatically identifies and suggests fixes for common issues. We've included an intentionally failing test in the `@org/async` package to demonstrate this feature.
 
-To version and release the library use
+```bash
+# Run tests and see the failure
+npx nx test async
 
+# In CI, this command provides automated fixes
+npx nx fix-ci
 ```
+
+[Learn more about self-healing CI →](https://nx.dev/ci/features/self-healing-ci)
+
+### 4. 📦 Package Publishing
+
+Manage releases and publishing with Nx Release:
+
+```bash
+# Dry run to see what would be published
+npx nx release --dry-run
+
+# Version and release packages
 npx nx release
+
+# Publish only specific packages
+npx nx release publish --projects=strings,colors
 ```
 
-Pass `--dry-run` to see what would happen without actually releasing the library.
+[Learn more about Nx Release →](https://nx.dev/features/manage-releases)
 
-[Learn more about Nx release &raquo;](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## 📁 Project Structure
 
-## Keep TypeScript project references up to date
-
-Nx automatically updates TypeScript [project references](https://www.typescriptlang.org/docs/handbook/project-references.html) in `tsconfig.json` files to ensure they remain accurate based on your project dependencies (`import` or `require` statements). This sync is automatically done when running tasks such as `build` or `typecheck`, which require updated references to function correctly.
-
-To manually trigger the process to sync the project graph dependencies information to the TypeScript project references, run the following command:
-
-```sh
-npx nx sync
+```
+├── packages/
+│   ├── strings/     [scope:strings] - String utilities (publishable)
+│   ├── async/       [scope:async]   - Async utilities (publishable)
+│   ├── colors/      [scope:colors]  - Color utilities (publishable)
+│   └── utils/       [scope:shared]  - Shared utilities (private)
+├── nx.json          - Nx configuration
+├── tsconfig.json    - TypeScript configuration
+└── eslint.config.mjs - ESLint with module boundary rules
 ```
 
-You can enforce that the TypeScript project references are always in the correct state when running in CI by adding a step to your CI job configuration that runs the following command:
+## 🏷️ Understanding Tags
 
-```sh
-npx nx sync:check
+This repository uses tags to enforce module boundaries:
+
+| Package | Tag | Can Import From |
+|---------|-----|----------------|
+| `@org/utils` | `scope:shared` | Nothing (base library) |
+| `@org/strings` | `scope:strings` | `scope:shared` |
+| `@org/async` | `scope:async` | `scope:shared` |
+| `@org/colors` | `scope:colors` | `scope:shared` |
+
+The ESLint configuration enforces these boundaries, preventing circular dependencies and maintaining clean architecture.
+
+## 🧪 Testing Module Boundaries
+
+To see module boundary enforcement in action:
+
+1. Try importing `@org/colors` into `@org/strings`
+2. Run `npx nx lint strings`
+3. You'll see an error about violating module boundaries
+
+## 📚 Useful Commands
+
+```bash
+# Project exploration
+npx nx graph                                    # Interactive dependency graph
+npx nx list                                     # List installed plugins
+npx nx show project strings --web              # View project details
+
+# Development
+npx nx build strings                           # Build a specific package
+npx nx test async                              # Test a specific package
+npx nx lint colors                             # Lint a specific package
+
+# Running multiple tasks
+npx nx run-many -t build                       # Build all projects
+npx nx run-many -t test --parallel=3          # Test in parallel
+npx nx run-many -t lint test build            # Run multiple targets
+
+# Affected commands (great for CI)
+npx nx affected -t build                       # Build only affected projects
+npx nx affected -t test                        # Test only affected projects
+
+# Release management
+npx nx release --dry-run                       # Preview release changes
+npx nx release                                 # Create a new release
 ```
 
-[Learn more about nx sync](https://nx.dev/reference/nx-commands#sync)
+## Nx Cloud
 
-## Set up CI!
 
-### Step 1
-
-To connect to Nx Cloud, run the following command:
-
-```sh
-npx nx connect
-```
-
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
+Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
 
 - [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
 - [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
 - [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
 - [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
 
-### Step 2
+### Set up CI (non-Github Actions CI)
+
+**Note:** This is only required if your CI provider is not GitHub Actions.
 
 Use the following command to configure a CI workflow for your workspace:
 
@@ -87,23 +194,20 @@ npx nx g ci-workflow
 
 [Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
 
-## Install Nx Console
+## 🔗 Learn More
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+- [Nx Documentation](https://nx.dev)
+- [Module Boundaries](https://nx.dev/features/enforce-module-boundaries)
+- [Custom Commands](https://nx.dev/concepts/executors-and-configurations)
+- [Self-Healing CI](https://nx.dev/ci/features/self-healing-ci)
+- [Releasing Packages](https://nx.dev/features/manage-releases)
+- [Nx Cloud](https://nx.dev/ci/intro/why-nx-cloud)
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## 💬 Community
 
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
+Join the Nx community:
 - [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+- [X (Twitter)](https://twitter.com/nxdevtools)
+- [LinkedIn](https://www.linkedin.com/company/nrwl)
+- [YouTube](https://www.youtube.com/@nxdevtools)
+- [Blog](https://nx.dev/blog)

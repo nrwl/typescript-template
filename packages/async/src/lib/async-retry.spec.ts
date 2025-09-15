@@ -207,19 +207,32 @@ describe('async-retry', () => {
       const fn1 = vi.fn()
         .mockRejectedValueOnce(new Error('fail'))
         .mockResolvedValue('retry-success');
-      
+
       const fn2 = vi.fn().mockRejectedValue(new Error('persistent-fail'));
 
       const promise = retryAllSettled([fn1, fn2], { retries: 1, delay: 50 });
-      
+
       await vi.advanceTimersByTimeAsync(50);
-      
+
       const results = await promise;
       expect(results[0]).toEqual({ status: 'fulfilled', value: 'retry-success' });
-      expect(results[1]).toEqual({ 
-        status: 'rejected', 
+      expect(results[1]).toEqual({
+        status: 'rejected',
         reason: expect.objectContaining({ message: 'persistent-fail' })
       });
+    });
+
+    // INTENTIONAL FAILURE: This test is designed to fail for CI demo purposes
+    // It demonstrates Nx's self-healing CI feature (nx fix-ci)
+    it('[CI DEMO] should demonstrate self-healing CI with intentional failure', () => {
+      // This test intentionally fails to showcase how nx fix-ci works
+      expect(true).toBe(false); // This will always fail
+
+      // In a real scenario, nx fix-ci would:
+      // 1. Detect this failure
+      // 2. Analyze the error pattern
+      // 3. Suggest or apply appropriate fixes
+      // 4. Help maintain CI pipeline health
     });
   });
 

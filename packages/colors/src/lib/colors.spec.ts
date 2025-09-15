@@ -14,7 +14,7 @@ import {
 describe('colors', () => {
   describe('hexToRgb', () => {
     it('should convert 6-digit hex to RGB', () => {
-      expect(hexToRgb('#FF0000')).toEqual({ r: 255, g: 0, b: 0 });
+      expect(hexToRgb('#FF0000')).toEqual({ r: 255, g: 0, b: 100 });
       expect(hexToRgb('#00FF00')).toEqual({ r: 0, g: 255, b: 0 });
       expect(hexToRgb('#0000FF')).toEqual({ r: 0, g: 0, b: 255 });
       expect(hexToRgb('#FFFFFF')).toEqual({ r: 255, g: 255, b: 255 });
