@@ -9,6 +9,7 @@
 This repository demonstrates a production-ready TypeScript monorepo with:
 
 - **3 Publishable Packages** - Ready for NPM publishing
+
   - `@org/strings` - String manipulation utilities
   - `@org/async` - Async utility functions with retry logic
   - `@org/colors` - Color conversion and manipulation utilities
@@ -29,7 +30,7 @@ npm install
 # Build all packages
 npx nx run-many -t build
 
-# Run tests (note: one test intentionally fails for CI demo)
+# Run tests
 npx nx run-many -t test
 
 # Lint all projects
@@ -56,6 +57,7 @@ Enforces architectural constraints using tags. Each package has specific depende
 - `scope:colors` - Can only depend on shared utilities
 
 **Try it out:**
+
 ```bash
 # See the current project graph and boundaries
 npx nx graph
@@ -82,7 +84,7 @@ npx nx show project strings
 
 ### 3. 🔧 Self-Healing CI
 
-The CI pipeline includes `nx fix-ci` which automatically identifies and suggests fixes for common issues. We've included an intentionally failing test in the `@org/async` package to demonstrate this feature.
+The CI pipeline includes `nx fix-ci` which automatically identifies and suggests fixes for common issues. To test it, you can make a change to `async-retry.spec.ts` so that it fails, and create a PR.
 
 ```bash
 # Run tests and see the failure
@@ -128,12 +130,12 @@ npx nx release publish --projects=strings,colors
 
 This repository uses tags to enforce module boundaries:
 
-| Package | Tag | Can Import From |
-|---------|-----|----------------|
-| `@org/utils` | `scope:shared` | Nothing (base library) |
-| `@org/strings` | `scope:strings` | `scope:shared` |
-| `@org/async` | `scope:async` | `scope:shared` |
-| `@org/colors` | `scope:colors` | `scope:shared` |
+| Package        | Tag             | Can Import From        |
+| -------------- | --------------- | ---------------------- |
+| `@org/utils`   | `scope:shared`  | Nothing (base library) |
+| `@org/strings` | `scope:strings` | `scope:shared`         |
+| `@org/async`   | `scope:async`   | `scope:shared`         |
+| `@org/colors`  | `scope:colors`  | `scope:shared`         |
 
 The ESLint configuration enforces these boundaries, preventing circular dependencies and maintaining clean architecture.
 
@@ -174,7 +176,6 @@ npx nx release                                 # Create a new release
 
 ## Nx Cloud
 
-
 Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
 
 - [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
@@ -206,6 +207,7 @@ npx nx g ci-workflow
 ## 💬 Community
 
 Join the Nx community:
+
 - [Discord](https://go.nx.dev/community)
 - [X (Twitter)](https://twitter.com/nxdevtools)
 - [LinkedIn](https://www.linkedin.com/company/nrwl)
