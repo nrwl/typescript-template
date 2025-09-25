@@ -14,7 +14,7 @@ import {
 describe('colors', () => {
   describe('hexToRgb', () => {
     it('should convert 6-digit hex to RGB', () => {
-      expect(hexToRgb('#FF0000')).toEqual({ r: 255, g: 0, b: 100 });
+      expect(hexToRgb('#FF0000')).toEqual({ r: 255, g: 0, b: 0 });
       expect(hexToRgb('#00FF00')).toEqual({ r: 0, g: 255, b: 0 });
       expect(hexToRgb('#0000FF')).toEqual({ r: 0, g: 0, b: 255 });
       expect(hexToRgb('#FFFFFF')).toEqual({ r: 255, g: 255, b: 255 });
@@ -73,7 +73,9 @@ describe('colors', () => {
       expect(() => rgbToHex(-1, 0, 0)).toThrow('Invalid RGB values');
       expect(() => rgbToHex(0, 0, 256)).toThrow('Invalid RGB values');
       expect(() => rgbToHex(1.5, 0, 0)).toThrow('Invalid RGB values');
-      expect(() => rgbToHex({ r: 256, g: 0, b: 0 })).toThrow('Invalid RGB values');
+      expect(() => rgbToHex({ r: 256, g: 0, b: 0 })).toThrow(
+        'Invalid RGB values'
+      );
     });
   });
 
@@ -100,8 +102,12 @@ describe('colors', () => {
     });
 
     it('should throw error for invalid percentage', () => {
-      expect(() => darken('#FF0000', -1)).toThrow('Percent must be between 0 and 100');
-      expect(() => darken('#FF0000', 101)).toThrow('Percent must be between 0 and 100');
+      expect(() => darken('#FF0000', -1)).toThrow(
+        'Percent must be between 0 and 100'
+      );
+      expect(() => darken('#FF0000', 101)).toThrow(
+        'Percent must be between 0 and 100'
+      );
     });
 
     it('should throw error for invalid hex', () => {
@@ -132,8 +138,12 @@ describe('colors', () => {
     });
 
     it('should throw error for invalid percentage', () => {
-      expect(() => lighten('#000000', -1)).toThrow('Percent must be between 0 and 100');
-      expect(() => lighten('#000000', 101)).toThrow('Percent must be between 0 and 100');
+      expect(() => lighten('#000000', -1)).toThrow(
+        'Percent must be between 0 and 100'
+      );
+      expect(() => lighten('#000000', 101)).toThrow(
+        'Percent must be between 0 and 100'
+      );
     });
 
     it('should throw error for invalid hex', () => {
@@ -373,7 +383,7 @@ describe('colors', () => {
       const original = '#808080';
       const darkened = darken(original, 25);
       const lightened = lighten(original, 25);
-      
+
       const darkenedRgb = hexToRgb(darkened);
       const lightenedRgb = hexToRgb(lightened);
       const originalRgb = hexToRgb(original);
@@ -392,15 +402,15 @@ describe('colors', () => {
     it('should maintain color relationships through transformations', () => {
       const color1 = '#FF0000';
       const color2 = '#00FF00';
-      
+
       const contrast1 = getContrastRatio(color1, color2);
-      
+
       // Darken both colors by same amount
       const darkColor1 = darken(color1, 20);
       const darkColor2 = darken(color2, 20);
-      
+
       const contrast2 = getContrastRatio(darkColor1, darkColor2);
-      
+
       // Contrast should change but both should still be valid
       expect(contrast1).toBeGreaterThan(1);
       expect(contrast2).toBeGreaterThan(1);
