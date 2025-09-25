@@ -30,10 +30,13 @@
     ],
     "targets": {
       "build-base": {
-        "command": "echo 'Running build-base for strings. This can be replaced with arbitrary commands.'"
+        "command": "echo 'Running build-base for strings. This can be replaced with arbitrary commands.'",
+        "cache": true
       },
       "build": {
-        "dependsOn": ["build-base"]
+        "dependsOn": [
+          "build-base"
+        ]
       }
     }
   }
