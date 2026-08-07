@@ -1,11 +1,11 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig(() => ({
-  root: __dirname,
-  cacheDir: '../../node_modules/.vite/packages/colors',
+  root: import.meta.dirname,
+  cacheDir: '../../node_modules/.vite/packages/async',
   plugins: [],
   test: {
-    name: '@org/colors',
+    name: '@org/async',
     watch: false,
     globals: true,
     environment: 'node',
